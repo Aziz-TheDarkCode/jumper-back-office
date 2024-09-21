@@ -42,7 +42,6 @@ model Customer {
   type CustomerType
    receiver       Shipment[]    @relation("receiver")
   sender         Shipment[]    @relation("sender")
-  userId       String
 }
 model Session {
   id           String   @id @default(cuid())

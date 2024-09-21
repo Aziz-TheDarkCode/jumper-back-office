@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { NextAuthProvider } from "@/components/providers/next-auth-provider";
 import { Lexend_Deca } from "next/font/google";
-
+import { Toaster } from "@/components/ui/toaster";
 const inter = Lexend_Deca({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,6 +20,7 @@ export default function RootLayout({
     <NextAuthProvider>
       <html lang="en">
         <body className={inter.className}>{children}</body>
+        <Toaster />
       </html>
     </NextAuthProvider>
   );

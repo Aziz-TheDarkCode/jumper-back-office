@@ -31,12 +31,13 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
-        console.log(credentials);
+        // console.log(credentials);
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
           },
         });
+        console.log("Find user", user);
         // || !(await compare(credentials.password, user.password!))
         if (!user) {
           return null;
@@ -47,7 +48,6 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
-          randomKey: "Hey cool",
         };
       },
     }),

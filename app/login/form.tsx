@@ -58,6 +58,7 @@ export const LoginForm = () => {
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
+      <Image width={100} height={100} src="/jumper.png" alt="ddjfuffu" />
       {error && (
         <p className="bg-pink-100 text-pink-500 p-3 text-sm  mb-6 rounded">
           {error}
@@ -70,18 +71,9 @@ export const LoginForm = () => {
         <p className="mx-auto t mt-4 max-w-md text-sm  text-gray-500">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Error, dolor
           consequatur ullam officiis repudiandae fugit distinctio molestiae
-          temporibus assumenda ut eligendi animi, voluptas molestias similique
-          perferendis, ipsam harum culpa minus at totam aliquam beatae. Dolore
-          quisquam cupiditate recusandae saepe beatae!
         </p>
       </section>
-      <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
-        <p className="text-center font-semibold mx-4 mb-0"> rrrrr</p>
-      </div>
-      <div className="grid md:grid-cols-2 gap-1"></div>
-      <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
-        <p className="text-center font-semibold uppercase mx-4 mb-0">Or</p>
-      </div>
+
       <div className="mb-6">
         <input
           required
@@ -107,7 +99,8 @@ export const LoginForm = () => {
       <Button
         type="submit"
         variant={"secondary"}
-        className="inline-block font-medium text-sm leading-snug uppercase rounded shadow-md  focus:shadow-lg focus:outline-none focus:ring-0  active:shadow-lg transition duration-150 ease-in-out w-full"
+        // className=""
+        className="inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-medium text-sm leading-snug uppercase rounded shadow-md  focus:shadow-lg focus:outline-none focus:ring-0  active:shadow-lg transition duration-150 ease-in-out w-full"
         disabled={loading}
       >
         {loading ? "loading..." : "Connexion"}

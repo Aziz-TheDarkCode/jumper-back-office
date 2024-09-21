@@ -12,8 +12,13 @@ import {
 import React from "react";
 import ShipmentModal from "../_components/ShipmentModal";
 import NewUserModal from "../_components/NewUserModal";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import ShipmentTable from "../_components/Table";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const session = await getServerSession(authOptions);
+  console.log(session?.user?.role);
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -51,6 +56,7 @@ export default function Dashboard() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Liste dernières transactions
             </h2>
+            <ShipmentTable />
             {/* Add your transactions list component here */}
           </div>
         </div>
