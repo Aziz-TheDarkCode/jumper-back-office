@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -22,57 +28,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import StatusTag from "./Badge";
+import { Shipment } from "@/actions/getShipments";
+import { useRouter } from "next/navigation";
+import { Button } from "@/app/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Invoice from "@/app/components/ui/invoice";
+import { useSession } from "next-auth/react";
+import { isManager } from "@/lib/utils";
 
-interface Shipment {
-  id: string;
-  origin: string;
-  destination: string;
-  type: string;
-  status: string;
-  trackingNumber: string;
-  price: number;
-  createdAt: string;
-  sender: {
-    fullName: string;
-    address: string;
-    phoneNumber: string;
-  };
-  receiver: {
-    fullName: string;
-    address: string;
-    phoneNumber: string;
-  };
-  user: {
-    name: string;
-  };
-}
+export default function ShipmentTable({
+  shipments,
+}: {
+  shipments: Shipment[];
+}) {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const user = session?.user;
 
-export default function ShipmentTable() {
-  const [shipments, setShipments] = useState<Shipment[]>([]);
   const [filteredShipments, setFilteredShipments] = useState<Shipment[]>([]);
-  const [loading, setLoading] = useState(true);
   const [loadingRow, setLoadingRow] = useState(false);
   const [nameFilter, setNameFilter] = useState("");
   const [trackingFilter, setTrackingFilter] = useState("");
+  const [originFilter, setOriginFilter] = useState(""); // New state for filtering by origin
+  const [destinationFilter, setDestinationFilter] = useState(""); // New state for filtering by destination
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchShipments = async () => {
-      try {
-        const response = await axios.get("/api/shipments");
-        setShipments(response.data);
-        setFilteredShipments(response.data);
-      } catch (error) {
-        toast({
-          title: "Erreur",
-          description: "Erreur lors du chargement des expéditions",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchShipments();
-  }, []);
 
   useEffect(() => {
     const filtered = shipments.filter(
@@ -85,24 +65,29 @@ export default function ShipmentTable() {
             .includes(nameFilter.toLowerCase())) &&
         shipment.trackingNumber
           .toLowerCase()
-          .includes(trackingFilter.toLowerCase())
+          .includes(trackingFilter.toLowerCase()) &&
+        shipment.origin.toLowerCase().includes(originFilter.toLowerCase()) && // Apply origin filter
+        shipment.destination
+          .toLowerCase()
+          .includes(destinationFilter.toLowerCase()) // Apply destination filter
     );
     setFilteredShipments(filtered);
-  }, [nameFilter, trackingFilter, shipments]);
-
+  }, [
+    nameFilter,
+    trackingFilter,
+    originFilter, // Include origin filter in the dependency array
+    destinationFilter, // Include destination filter in the dependency array
+    shipments,
+  ]);
   const handleChangeStatus = async (id: string, newStatus: string) => {
     try {
       setLoadingRow(true);
       await axios.patch(`/api/shipments/${id}`, { status: newStatus });
-      setShipments((prevShipments) =>
-        prevShipments.map((shipment) =>
-          shipment.id === id ? { ...shipment, status: newStatus } : shipment
-        )
-      );
       toast({
         title: "Succès",
         description: "Statut mis à jour avec succès",
       });
+      router.refresh();
     } catch (error) {
       toast({
         title: "Erreur",
@@ -112,12 +97,25 @@ export default function ShipmentTable() {
       setLoadingRow(false);
     }
   };
+  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(
+    null
+  );
 
-  if (loading) return <p>Chargement...</p>;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleRowClick = async (shipment: Shipment) => {
+    setIsModalOpen(true);
+    setSelectedShipment(shipment);
+  };
+  const handleShowInvoice = (shipment: Shipment) => {
+    setSelectedShipment(shipment);
+    setIsInvoiceOpen(true);
+  };
+  if (shipments.length === 0) return <p>Chargement...</p>;
 
   return (
     <div className="space-y-4">
-      <div className="flex space-x-4">
+      <div className="grid grid-cols-5 gap-3">
         <Input
           placeholder="Filtrer par nom"
           value={nameFilter}
@@ -130,6 +128,19 @@ export default function ShipmentTable() {
           onChange={(e) => setTrackingFilter(e.target.value)}
           className="max-w-sm"
         />
+        <Input
+          placeholder="Filtrer par origine"
+          value={originFilter}
+          onChange={(e) => setOriginFilter(e.target.value)}
+          className="max-w-sm"
+        />
+        <Input
+          placeholder="Filtrer par destination"
+          value={destinationFilter}
+          onChange={(e) => setDestinationFilter(e.target.value)}
+          className="max-w-sm"
+        />
+        <Button>Réinitialiser</Button>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -145,12 +156,17 @@ export default function ShipmentTable() {
               <TableHead>Créer par</TableHead>
               <TableHead>Prix a payer</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>Changer le status </TableHead>
+              <TableHead>Changer le status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredShipments.map((shipment) => (
-              <TableRow key={shipment.id}>
+              <TableRow
+                onClick={() => handleRowClick(shipment)} // Set the click handler
+                key={shipment.id}
+                className="cursor-pointer"
+              >
                 <TableCell>{shipment.origin}</TableCell>
                 <TableCell>{shipment.destination}</TableCell>
                 <TableCell>{shipment.type}</TableCell>
@@ -167,7 +183,7 @@ export default function ShipmentTable() {
                 </TableCell>
                 <TableCell>
                   <Select
-                    disabled={loadingRow}
+                    disabled={loadingRow || isManager(session?.user.role as string)}
                     defaultValue={shipment.status}
                     onValueChange={(value) =>
                       handleChangeStatus(shipment.id, value)
@@ -184,11 +200,123 @@ export default function ShipmentTable() {
                     </SelectContent>
                   </Select>
                 </TableCell>
+                <TableCell>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleShowInvoice(shipment);
+                    }}
+                    className="bg-[#148aab] hover:bg-[#0e697f8f]"
+                  >
+                    Afficher la facture
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="h-[500px] overflow-scroll">
+          {selectedShipment ? (
+            <div>
+              <div className="px-4 sm:px-0">
+                <h3 className="text-base font-semibold leading-7 text-gray-900">
+                  Détails de l'expédition
+                </h3>
+                <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+                  Détails du colis et de l'expéditeur.
+                </p>
+              </div>
+              <div className="mt-6 border-t border-gray-100">
+                <dl className="divide-y divide-gray-100">
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Nature du colis
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.description}{" "}
+                      <StatusTag status={selectedShipment.status} />
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Numéro de suivi
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.trackingNumber}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Nom de l'expéditeur
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.sender.fullName}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Numéro de l'éxpéditeur
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.sender.phoneNumber}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Adresse de l'éxpéditeur
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.sender.address}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Nom du destinataire
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.receiver.fullName}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Numéro du destinataire
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.receiver.phoneNumber}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Adresse du destinataire
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.receiver.address}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                      Prix
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {selectedShipment.price} FCFA
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+              <Button onClick={() => setIsModalOpen(false)}>Fermer</Button>
+            </div>
+          ) : (
+            <p>Aucune information disponible</p>
+          )}
+        </DialogContent>
+      </Dialog>
+      <Invoice
+        onClose={() => setIsInvoiceOpen(false)}
+        shipment={selectedShipment as Shipment}
+        isOpen={isInvoiceOpen}
+      />
     </div>
   );
 }

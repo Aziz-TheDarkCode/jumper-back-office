@@ -5,7 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export function isAdmin(role: string): boolean {
-  return role === "admin";
+  return role === "ADMIN";
+}
+export function isManager(role: string): boolean {
+  return role === "USER";
 }
 export function translateStatus(status: string): string {
   switch (status) {

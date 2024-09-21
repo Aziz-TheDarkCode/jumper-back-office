@@ -1,7 +1,19 @@
+import getCustomers from "@/actions/getCustomersWithTransactions";
+import Header from "@/components/header";
 import React from "react";
+import CustomerTable from "../_components/CustomerTable";
 
-function Page() {
-  return <div>Dashboard of customers</div>;
+async function Page() {
+  const customers = await getCustomers();
+  console.log(customers);
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <Header />
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <CustomerTable customers={customers} />
+      </main>
+    </div>
+  );
 }
 
 export default Page;

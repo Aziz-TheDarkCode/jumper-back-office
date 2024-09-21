@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { z } from "zod";
@@ -24,6 +24,8 @@ import { Button } from "@/app/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import clsx from "clsx"; // Import clsx for conditional class names
 import { Loader2 } from "lucide-react";
+import { Customer } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 // Zod Schema for Shipment Input Validation
 const shipmentSchema = z.object({
@@ -50,18 +52,26 @@ const shipmentSchema = z.object({
   weight: z.number().min(0.1, "Le poids est requis"),
   price: z.number().min(1, "Le prix est requis"),
   estimatedValue: z.number().min(1, "Valeur estimée requise"),
-  //   type: z.string( ),
+  type: z.enum(["FREIGHT", "GP", "EXPRESS"]),
   origin: z.string().min(1, "Origine requise"),
   destination: z.string().min(1, "Destination requise"),
 });
 
-export default function ShipmentModal() {
+export default function ShipmentModal({
+  customers,
+}: {
+  customers: Customer[];
+}) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
+  const [senderType, setSenderType] = useState<"new" | "existing">("new");
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(shipmentSchema),
@@ -75,6 +85,7 @@ export default function ShipmentModal() {
         title: "Succès",
         description: "L'expédition a été créée avec succès",
       });
+      router.refresh();
       setOpen(false); // Close the modal on success
     } catch (error) {
       toast({
@@ -85,7 +96,26 @@ export default function ShipmentModal() {
       setLoading(false);
     }
   };
-
+  const handleSenderSelect = (senderId: string) => {
+    const selectedSender = customers.find((sender) => sender.id === senderId);
+    if (selectedSender) {
+      setValue("sender_name", selectedSender.fullName);
+      setValue("sender_phone_number", selectedSender.phoneNumber);
+      setValue("sender_email", selectedSender.email);
+      setValue("sender_adress", selectedSender.address);
+    }
+  };
+  const handleSenderTypeChange = (value: "new" | "existing") => {
+    setSenderType(value);
+    if (value === "new") {
+      // Clear sender fields when switching to "new client"
+      setValue("sender_name", "");
+      setValue("sender_phone_number", "");
+      setValue("sender_email", "");
+      setValue("sender_adress", "");
+      setValue("sender_id", ""); // Clear the selected sender id
+    }
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -107,6 +137,45 @@ export default function ShipmentModal() {
                 Informations sur l'expéditeur
               </h2>
               <div className="mb-4">
+                <Select onValueChange={handleSenderTypeChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Qui envoie ?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="existing">Ancien client</SelectItem>
+                    <SelectItem value="new">Nouveau client</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {senderType === "existing" ? (
+                <div className="mb-4">
+                  <Controller
+                    name="sender_id"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          handleSenderSelect(value);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner un expéditeur" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {customers.map((sender) => (
+                            <SelectItem key={sender.id} value={sender.id}>
+                              {sender.fullName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+              ) : null}
+
+              <div className="mb-4">
                 <Input
                   {...register("sender_name")}
                   placeholder="Nom Complet"
@@ -114,6 +183,7 @@ export default function ShipmentModal() {
                     "border",
                     errors.sender_name ? "border-pink-600" : "border-gray-300"
                   )}
+                  disabled={senderType === "existing"}
                 />
                 {errors.sender_name && (
                   <small className="text-pink-600">
@@ -131,6 +201,7 @@ export default function ShipmentModal() {
                       ? "border-pink-600"
                       : "border-gray-300"
                   )}
+                  disabled={senderType === "existing"}
                 />
                 {errors.sender_phone_number && (
                   <small className="text-pink-600">
@@ -146,6 +217,7 @@ export default function ShipmentModal() {
                     "border",
                     errors.sender_email ? "border-pink-600" : "border-gray-300"
                   )}
+                  disabled={senderType === "existing"}
                 />
                 {errors.sender_email && (
                   <small className="text-pink-600">
@@ -161,6 +233,7 @@ export default function ShipmentModal() {
                     "border",
                     errors.sender_adress ? "border-pink-600" : "border-gray-300"
                   )}
+                  disabled={senderType === "existing"}
                 />
                 {errors.sender_adress && (
                   <small className="text-pink-600">
@@ -250,23 +323,27 @@ export default function ShipmentModal() {
               Détails de l'expédition
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              {/* <div>
-                <Select {...register("type")}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choisir type d'envoi" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="EXPRESS">Express</SelectItem>
-                    <SelectItem value="FREIGHT">Freight</SelectItem>
-                    <SelectItem value="GP">GP</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div>
+                <Controller
+                  name="type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choisir type d'envoi" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="EXPRESS">Express</SelectItem>
+                        <SelectItem value="FREIGHT">Freight</SelectItem>
+                        <SelectItem value="GP">GP</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.type && (
-                  <small className="text-pink-600">
-                    {errors.type.message as string}
-                  </small>
+                  <small className="text-pink-600">{errors.type.message}</small>
                 )}
-              </div> */}
+              </div>
 
               <div>
                 <Input

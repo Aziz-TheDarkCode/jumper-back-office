@@ -1,9 +1,12 @@
+import { hash } from "crypto";
+
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
 async function main() {
   try {
+    // const hashedPassword = await hash("123456", 10);
     await prisma.user.createMany({
       data: [
         {

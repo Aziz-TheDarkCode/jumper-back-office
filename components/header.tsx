@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/app/components/ui/button";
-import { HomeIcon, BarChart3Icon, BellIcon, XCircle } from "lucide-react";
+import { BarChart3Icon, XCircle } from "lucide-react";
 import {
   Disclosure,
   DisclosureButton,
@@ -14,11 +14,15 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation"; // Import usePathname
 
 const Header = () => {
   const { data: session } = useSession();
   const user = session?.user;
-  console.log(user);
+  const pathname = usePathname(); // Get current path
+
+  const isActiveLink = (href: string) => pathname === href; // Check if the link is active
+
   return (
     <Disclosure as="nav" className="bg-white shadow">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -47,22 +51,34 @@ const Header = () => {
               />
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              {/* Current: "border-[#e8cc2b] text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
+              {/* Current: "border-[#e8cc2b] ", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
               <Link
-                href="/dashboard/shipments"
-                className="inline-flex items-center border-b-2 border-[#e8cc2b] px-1 pt-1 text-sm font-medium text-gray-900"
+                href="/"
+                className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
+                  isActiveLink("/")
+                    ? "border-[#e8cc2b] "
+                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                }`}
               >
                 Dashboard
               </Link>
               <Link
                 href="/dashboard/shipments"
-                className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
+                  isActiveLink("/dashboard/shipments")
+                    ? "border-[#e8cc2b] "
+                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                }`}
               >
                 Liste des expeditions
               </Link>
               <Link
                 href="/dashboard/customers"
-                className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
+                  isActiveLink("/dashboard/customers")
+                    ? "border-[#e8cc2b] "
+                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                }`}
               >
                 Liste des clients
               </Link>
@@ -124,25 +140,37 @@ const Header = () => {
 
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 pb-4 pt-2">
-          {/* Current: "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
+          {/* Current: "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700 underline", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
           <DisclosureButton
             as="a"
-            href="/dashboard/shipments"
-            className="block border-l-4 border-[#e8cc2b] bg-[#e8cc2b] py-2 pl-3 pr-4 text-base font-medium text-[#e8cc2b]-700"
+            href="/"
+            className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium ${
+              isActiveLink("/")
+                ? "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700 underline"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+            }`}
           >
             Dashboard
           </DisclosureButton>
           <DisclosureButton
             as="a"
             href="/dashboard/shipments"
-            className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+            className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium ${
+              isActiveLink("/dashboard/shipments")
+                ? "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700 underline"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+            }`}
           >
             Liste des éxpeditions
           </DisclosureButton>
           <DisclosureButton
             as="a"
             href="/dashboard/customers"
-            className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+            className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium ${
+              isActiveLink("/dashboard/customers")
+                ? "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700 underline"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+            }`}
           >
             Liste des clients
           </DisclosureButton>
@@ -152,22 +180,4 @@ const Header = () => {
   );
 };
 
-// return (
-//   <>
-//     <header className="bg-white shadow">
-//       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-//         <div className="flex items-center">
-//           <HomeIcon className="h-8 w-8 text-gray-500 mr-3" />
-//           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-//         </div>
-//         <div className="flex items-center">
-//           <span className="mr-4">{user?.name}</span>
-//           <Button onClick={() => signOut()} variant="destructive" size="sm">
-//             Deconnexion
-//           </Button>
-//         </div>
-//       </div>
-//     </header>
-//   </>
-// );
 export default Header;
