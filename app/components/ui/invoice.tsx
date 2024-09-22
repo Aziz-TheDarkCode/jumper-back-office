@@ -51,17 +51,17 @@ export default function Invoice({
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="space-y-1">
                   <h2 className="font-semibold text-[#148aab]">Expéditeur:</h2>
-                  <p>{shipment.sender.fullName}</p>
-                  <p>{shipment.sender.address}</p>
-                  <p>{shipment.sender.phoneNumber}</p>
+                  <p>{shipment?.sender?.fullName}</p>
+                  <p>{shipment?.sender?.address}</p>
+                  <p>{shipment?.sender?.phoneNumber}</p>
                 </div>
                 <div className="space-y-1">
                   <h2 className="font-semibold text-[#148aab]">
                     Destinataire:
                   </h2>
-                  <p>{shipment.receiver.fullName}</p>
-                  <p>{shipment.receiver.address}</p>
-                  <p>{shipment.receiver.phoneNumber}</p>
+                  <p>{shipment?.receiver?.fullName}</p>
+                  <p>{shipment?.receiver?.address}</p>
+                  <p>{shipment?.receiver?.phoneNumber}</p>
                 </div>
               </div>
 
@@ -74,7 +74,7 @@ export default function Invoice({
                   Destination : {shipment.origin} → {shipment.destination}
                 </p>
                 <p>
-                  Date d'envoi :{" "}
+                  Date d&apos;envoi :{" "}
                   {new Date(shipment.createdAt).toLocaleDateString()}
                 </p>
                 <p>Valeur estimé du colis : {shipment.estimatedValue} FCFA</p>

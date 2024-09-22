@@ -34,7 +34,7 @@ const shipmentSchema = z.object({
     .string()
     .regex(
       /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
-      "Veuillez entrer un numéro correct. Préciser l'indicatif du pays"
+      "Veuillez entrer un numéro correct. Préciser l&apos;indicatif du pays"
     ),
   sender_email: z.string().email("Email invalide").optional(),
   sender_adress: z.string().min(1, "Adresse est requise"),
@@ -44,7 +44,7 @@ const shipmentSchema = z.object({
     .string()
     .regex(
       /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
-      "Veuillez entrer un numéro correct. Préciser l'indicatif du pays"
+      "Veuillez entrer un numéro correct. Préciser l&apos;indicatif du pays"
     ),
   receiver_email: z.string().email("Email invalide").optional(),
   receiver_adress: z.string().min(1, "Adresse est requise"),
@@ -80,17 +80,18 @@ export default function ShipmentModal({
   const onSubmit = async (data: any) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/shipments", data);
+      await axios.post("/api/shipments", data);
       toast({
         title: "Succès",
-        description: "L'expédition a été créée avec succès",
+        description: "l&apos;expédition a été créée avec succès",
       });
       router.refresh();
       setOpen(false); // Close the modal on success
     } catch (error) {
+      console.error(error);
       toast({
         title: "Erreur",
-        description: "Erreur lors de la création de l'expédition",
+        description: "Erreur lors de la création de l&apos;expédition",
         variant: "destructive",
       });
     } finally {
@@ -127,7 +128,7 @@ export default function ShipmentModal({
       <DialogContent className="max-w-4xl h-[500px] overflow-scroll">
         <DialogHeader>
           <DialogTitle className="mb-6">
-            Création d'un nouveau envoi
+            Création d&apos;un nouveau envoi
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -135,7 +136,7 @@ export default function ShipmentModal({
             {/* Sender Info */}
             <div>
               <h2 className="text-lg font-semibold mb-4">
-                Informations sur l'expéditeur
+                Informations sur l&apos;expéditeur
               </h2>
               <div className="mb-4">
                 <Select onValueChange={handleSenderTypeChange}>
@@ -321,7 +322,7 @@ export default function ShipmentModal({
           {/* Shipment Details */}
           <div className="mt-6">
             <h2 className="text-lg font-semibold mb-4">
-              Détails de l'expédition
+              Détails de l&apos;expédition
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -342,7 +343,7 @@ export default function ShipmentModal({
                   )}
                 />
                 {errors.type && (
-                  <small className="text-pink-600">{errors.type.message}</small>
+                  <small className="text-pink-600">{errors.type.message as string}</small>
                 )}
               </div>
 
@@ -458,7 +459,7 @@ export default function ShipmentModal({
               {loading ? (
                 <Loader2 className="w-8 h-8 animate-spin text-secondary" />
               ) : (
-                "Créer l'expedition"
+                "Créer l&apos;expedition"
               )}
             </Button>
           </div>

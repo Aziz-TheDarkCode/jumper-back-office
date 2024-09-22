@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
 import { Customer } from "@prisma/client"; // Assuming Customer type is imported here
 
 export default function CustomerTable({
@@ -24,7 +23,7 @@ export default function CustomerTable({
 >([]);
   const [nameFilter, setNameFilter] = useState("");
   const [emailFilter, setEmailFilter] = useState("");
-  const { toast } = useToast();
+ 
 
   useEffect(() => {
     const filtered = customers.filter(

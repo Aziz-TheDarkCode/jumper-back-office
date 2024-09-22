@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { customAlphabet } from "nanoid";
 import { authOptions } from "@/lib/auth";
-import { DefaultSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
+import { customAlphabet } from "nanoid";
+import { getServerSession } from "next-auth/next";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   const shipments = await prisma.shipment.findMany({

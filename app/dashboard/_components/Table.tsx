@@ -1,14 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Shipment } from "@/actions/getShipments";
+import { Button } from "@/app/components/ui/button";
+import Invoice from "@/app/components/ui/invoice";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -16,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -25,16 +20,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
-import StatusTag from "./Badge";
-import { Shipment } from "@/actions/getShipments";
-import { useRouter } from "next/navigation";
-import { Button } from "@/app/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import Invoice from "@/app/components/ui/invoice";
-import { useSession } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
 import { isManager } from "@/lib/utils";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import StatusTag from "./Badge";
 
 export default function ShipmentTable({
   shipments,
@@ -43,7 +35,6 @@ export default function ShipmentTable({
 }) {
   const router = useRouter();
   const { data: session } = useSession();
-  const user = session?.user;
 
   const [filteredShipments, setFilteredShipments] = useState<Shipment[]>([]);
   const [loadingRow, setLoadingRow] = useState(false);
@@ -57,10 +48,10 @@ export default function ShipmentTable({
   useEffect(() => {
     const filtered = shipments.filter(
       (shipment) =>
-        (shipment.sender.fullName
+        (shipment?.sender?.fullName
           .toLowerCase()
           .includes(nameFilter.toLowerCase()) ||
-          shipment.receiver.fullName
+          shipment?.receiver?.fullName
             .toLowerCase()
             .includes(nameFilter.toLowerCase())) &&
         shipment.trackingNumber
@@ -89,6 +80,7 @@ export default function ShipmentTable({
       });
       router.refresh();
     } catch (error) {
+      console.error(error);
       toast({
         title: "Erreur",
         description: "Erreur lors de la mise à jour du statut",
@@ -98,7 +90,7 @@ export default function ShipmentTable({
       setLoadingRow(false);
     }
   };
-  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(
+  const [selectedShipment, setselectedShipment] = useState<Shipment | null>(
     null
   );
 
@@ -106,10 +98,10 @@ export default function ShipmentTable({
 
   const handleRowClick = async (shipment: Shipment) => {
     setIsModalOpen(true);
-    setSelectedShipment(shipment);
+    setselectedShipment(shipment);
   };
   const handleShowInvoice = (shipment: Shipment) => {
-    setSelectedShipment(shipment);
+    setselectedShipment(shipment);
     setIsInvoiceOpen(true);
   };
   if (shipments.length === 0) return <p>Chargement...</p>;
@@ -152,7 +144,7 @@ export default function ShipmentTable({
               <TableHead>Type</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead>Numéro de suivi</TableHead>
-              <TableHead>Nom de l'expéditeur</TableHead>
+              <TableHead>Nom de l&apos;expéditeur</TableHead>
               <TableHead>Nom du destinataire</TableHead>
               <TableHead>Créer par</TableHead>
               <TableHead>Prix a payer</TableHead>
@@ -175,9 +167,9 @@ export default function ShipmentTable({
                   <StatusTag status={shipment.status} />
                 </TableCell>
                 <TableCell>{shipment.trackingNumber}</TableCell>
-                <TableCell>{shipment.sender.fullName}</TableCell>
-                <TableCell>{shipment.receiver.fullName}</TableCell>
-                <TableCell>{shipment.user.name}</TableCell>
+                <TableCell>{shipment?.sender?.fullName}</TableCell>
+                <TableCell>{shipment?.receiver?.fullName}</TableCell>
+                <TableCell>{shipment?.user?.name}</TableCell>
                 <TableCell>{shipment.price} FCFA</TableCell>
                 <TableCell>
                   {new Date(shipment.createdAt).toLocaleDateString()}
@@ -226,10 +218,10 @@ export default function ShipmentTable({
             <div>
               <div className="px-4 sm:px-0">
                 <h3 className="text-base font-semibold leading-7 text-gray-900">
-                  Détails de l'expédition
+                  Détails de l&apos;expédition
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-                  Détails du colis et de l'expéditeur.
+                  Détails du colis et de l&apos;expéditeur.
                 </p>
               </div>
               <div className="mt-6 border-t border-gray-100">
@@ -253,26 +245,26 @@ export default function ShipmentTable({
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-medium leading-6 text-gray-900">
-                      Nom de l'expéditeur
+                      Nom de l&apos;expéditeur
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {selectedShipment.sender.fullName}
+                      {selectedShipment?.sender?.fullName}
                     </dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-medium leading-6 text-gray-900">
-                      Numéro de l'éxpéditeur
+                      Numéro de l&apos;éxpéditeur
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {selectedShipment.sender.phoneNumber}
+                      {selectedShipment?.sender?.phoneNumber}
                     </dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-medium leading-6 text-gray-900">
-                      Adresse de l'éxpéditeur
+                      Adresse de l&apos;éxpéditeur
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {selectedShipment.sender.address}
+                      {selectedShipment?.sender?.address}
                     </dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -280,7 +272,7 @@ export default function ShipmentTable({
                       Nom du destinataire
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {selectedShipment.receiver.fullName}
+                      {selectedShipment?.receiver?.fullName}
                     </dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -288,7 +280,7 @@ export default function ShipmentTable({
                       Numéro du destinataire
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {selectedShipment.receiver.phoneNumber}
+                      {selectedShipment?.receiver?.phoneNumber}
                     </dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -296,7 +288,7 @@ export default function ShipmentTable({
                       Adresse du destinataire
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {selectedShipment.receiver.address}
+                      {selectedShipment?.receiver?.address}
                     </dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

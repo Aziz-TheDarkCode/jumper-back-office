@@ -33,7 +33,7 @@ const userSchema = z.object({
     .string()
     .regex(
       /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
-      "Veuillez entrer un numéro correct. Préciser l'indicatif du pays"
+      "Veuillez entrer un numéro correct. Préciser l&apos;indicatif du pays"
     ),
   email: z.string().min(1, "Email invalide"),
   password: z
@@ -58,20 +58,20 @@ export default function NewUserModal() {
   });
 
   const onSubmit = async (data: any) => {
-      try {
-        const response = await axios.post("/api/users", data);
+    try {
+      await axios.post("/api/users", data);
       setLoading(true);
       toast({
         title: "Succès",
-        description: "L'utilisateur a été créé avec succès",
-
+        description: "l&apos;utilisateur a été créé avec succès",
       });
       router.refresh();
       setOpen(false);
     } catch (error) {
+      console.error(error);
       toast({
         title: "Erreur",
-        description: "Erreur lors de la création de l'utilisateur",
+        description: "Erreur lors de la création de l&apos;utilisateur",
         variant: "destructive",
       });
     } finally {
@@ -89,7 +89,7 @@ export default function NewUserModal() {
       <DialogContent className="max-w-xl h-[500px] overflow-scroll">
         <DialogHeader>
           <DialogTitle className="mb-2">
-            Ajout d'un nouveau utilisateur
+            Ajout d&apos;un nouveau utilisateur
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>

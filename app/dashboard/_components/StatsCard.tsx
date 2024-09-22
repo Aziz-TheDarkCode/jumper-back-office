@@ -1,9 +1,16 @@
-import { ReactNode } from "react";
+import React, { ReactElement } from "react";
+
+// Define a union type for all possible icon components
+type IconComponent =
+  | { type: 'GlobeIcon' }
+  | { type: 'TruckIcon' }
+  | { type: 'DownloadIcon' }
+  | { type: 'CheckCircleIcon' };
 
 interface StatCardProps {
   value: number;
   label: string;
-  icon: ReactNode;
+  icon: ReactElement<IconComponent>;
 }
 
 export default function StatCard({ value, label, icon }: StatCardProps) {
@@ -25,9 +32,8 @@ export default function StatCard({ value, label, icon }: StatCardProps) {
   );
 }
 
-function getIconColor(icon: ReactNode): string {
-  // This is a simple implementation. You might want to adjust this based on your actual icon components.
-  switch (icon?.type) {
+function getIconColor(icon: ReactElement<IconComponent>): string {
+  switch (icon.type) {
     case "GlobeIcon":
       return "rgba(255, 166, 0, 0.2)"; // Orange
     case "TruckIcon":

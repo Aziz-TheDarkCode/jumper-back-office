@@ -1,27 +1,29 @@
+import { prisma } from "@/lib/prisma";
+
 export interface Shipment {
   id: string;
   origin: string;
   destination: string;
   type: string;
   description: string;
-  estimatedValue: string;
+  estimatedValue: number;
   status: string;
   trackingNumber: string;
   price: number;
-  createdAt: string;
+  createdAt: Date;
   sender: {
     fullName: string;
     address: string;
     phoneNumber: string;
-  };
+  } | null;
   receiver: {
     fullName: string;
     address: string;
     phoneNumber: string;
-  };
+  } | null;
   user: {
-    name: string;
-  };
+    name: string | null;
+  }| null;
 }
 const getShipments = async (limit: number | null): Promise<Shipment[]> => {
   try {

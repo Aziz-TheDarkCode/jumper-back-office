@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
 import { NextAuthProvider } from "@/components/providers/next-auth-provider";
-import { Lexend_Deca } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import type { Metadata } from "next";
+import { Lexend_Deca } from "next/font/google";
+import "./globals.css";
 const inter = Lexend_Deca({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
