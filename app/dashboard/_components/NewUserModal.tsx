@@ -64,6 +64,7 @@ export default function NewUserModal() {
       toast({
         title: "Succès",
         description: "L'utilisateur a été créé avec succès",
+
       });
       router.refresh();
       setOpen(false);
@@ -71,6 +72,7 @@ export default function NewUserModal() {
       toast({
         title: "Erreur",
         description: "Erreur lors de la création de l'utilisateur",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);

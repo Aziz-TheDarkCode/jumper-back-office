@@ -11,7 +11,10 @@ export async function PATCH(
   //   console.log()
   if (!session || session.user?.role !== "ADMIN") {
     return NextResponse.json(
-      { error: "Unauthorized. Seul les admins peuvent effectuer cette opération." },
+      {
+        error:
+          "Unauthorized. Seul les admins peuvent effectuer cette opération.",
+      },
       { status: 401 }
     );
   }
@@ -20,7 +23,13 @@ export async function PATCH(
     const { status } = await request.json();
 
     // Validate the status
-    const validStatuses = ["PENDING", "IN_TRANSIT", "DELIVERED", "CANCELLED"];
+    const validStatuses = [
+      "PENDING",
+      "IN_TRANSIT",
+      "DELIVERED",
+      "CANCELLED",
+      "ARRIVED",
+    ];
     if (!validStatuses.includes(status)) {
       return NextResponse.json(
         { error: "Invalid status provided" },

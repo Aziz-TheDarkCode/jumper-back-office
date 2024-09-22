@@ -83,6 +83,7 @@ model User {
 enum ShipmentStatus {
   PENDING
   IN_TRANSIT
+  ARRIVED
   DELIVERED
   CANCELLED
 }

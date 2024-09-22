@@ -2,19 +2,17 @@
 
 import { useEffect, useState } from "react";
 
-import { useToast } from "@/hooks/use-toast";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
 import { Customer } from "@prisma/client"; // Assuming Customer type is imported here
-import Invoice from "@/app/components/ui/invoice";
 
 export default function CustomerTable({
   customers,
@@ -23,7 +21,7 @@ export default function CustomerTable({
 }) {
   const [filteredCustomers, setFilteredCustomers] = useState<
     (Customer & { transactionCount: number })[]
-  >([]);
+>([]);
   const [nameFilter, setNameFilter] = useState("");
   const [emailFilter, setEmailFilter] = useState("");
   const { toast } = useToast();

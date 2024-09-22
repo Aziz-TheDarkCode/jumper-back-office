@@ -91,6 +91,7 @@ export default function ShipmentModal({
       toast({
         title: "Erreur",
         description: "Erreur lors de la création de l'expédition",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);

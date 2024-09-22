@@ -92,6 +92,7 @@ export default function ShipmentTable({
       toast({
         title: "Erreur",
         description: "Erreur lors de la mise à jour du statut",
+        variant: "destructive",
       });
     } finally {
       setLoadingRow(false);
@@ -183,7 +184,9 @@ export default function ShipmentTable({
                 </TableCell>
                 <TableCell>
                   <Select
-                    disabled={loadingRow || isManager(session?.user.role as string)}
+                    disabled={
+                      loadingRow || isManager(session?.user.role as string)
+                    }
                     defaultValue={shipment.status}
                     onValueChange={(value) =>
                       handleChangeStatus(shipment.id, value)
@@ -195,6 +198,7 @@ export default function ShipmentTable({
                     <SelectContent>
                       <SelectItem value="PENDING">En attente</SelectItem>
                       <SelectItem value="IN_TRANSIT">En transit</SelectItem>
+                      <SelectItem value="ARRIVED">Arrivé</SelectItem>
                       <SelectItem value="DELIVERED">Livré</SelectItem>
                       <SelectItem value="CANCELLED">Annulé</SelectItem>
                     </SelectContent>

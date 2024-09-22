@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { customAlphabet } from "nanoid";
 import { authOptions } from "@/lib/auth";
 import { DefaultSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const shipments = await prisma.shipment.findMany({
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
         type: body.type,
         status: "PENDING",
         trackingNumber: nanoid(),
-        user: { connect: { id: session.user?.id } },
+        user: { connect: { id: session.user?.id as string } },
       },
     });
 
