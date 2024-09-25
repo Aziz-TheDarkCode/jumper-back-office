@@ -10,7 +10,7 @@ const getCustomers = async (): Promise<Customer[]> => {
     });
     return customers;
   } catch (error) {
-    console.log("[GET_CUSTOMERS]", error);
+    console.log("[ET_CUSTOMERS]", error);
     return [];
   }
 };
