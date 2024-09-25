@@ -459,7 +459,7 @@ export default function ShipmentModal({
               {loading ? (
                 <Loader2 className="w-8 h-8 animate-spin text-secondary" />
               ) : (
-                "Créer l&apos;expedition"
+                "Créer l'expedition"
               )}
             </Button>
           </div>

@@ -1,14 +1,15 @@
 "use client";
 
+import { Eye, EyeOff } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import { Button } from "../components/ui/button";
 
 export const LoginForm = () => {
   const router = useRouter();
-
+  const [isHidden, setIsHidden] = useState<boolean>(true);
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({
     email: "",
@@ -69,8 +70,9 @@ export const LoginForm = () => {
           Bienvenue sur Jumper Back Office
         </h1>
         <p className="mx-auto t mt-4 max-w-md text-sm  text-gray-500">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Error, dolor
-          consequatur ullam officiis repudiandae fugit distinctio molestiae
+          Connectez-vous pour accéder à vos outils de gestion, suivre vos
+          commandes, et gérer facilement toutes les opérations liées à votre
+          entreprise.
         </p>
       </section>
 
@@ -85,16 +87,27 @@ export const LoginForm = () => {
           className={`${input_style}`}
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-6 relative">
         <input
           required
-          type="password"
+          type={isHidden ? "password" : "text"}
           name="password"
           value={formValues.password}
           onChange={handleChange}
           placeholder="Password"
           className={`${input_style}`}
         />
+        <button
+          type="button"
+          onClick={() => setIsHidden(!isHidden)}
+          className="absolute right-2 cursor-pointer top-3 "
+        >
+          {isHidden ? (
+            <Eye className="w-5 h-5 text-gray-500" />
+          ) : (
+            <EyeOff className="w-5 h-5 text-gray-500" />
+          )}
+        </button>
       </div>
       <Button
         type="submit"
