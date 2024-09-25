@@ -12,16 +12,15 @@ const getCustomers = async (): Promise<
       include: {
         _count: {
           select: {
-            sender: true, // Count the number of shipments where the customer is the sender
+            sender: true,
           },
         },
       },
     });
 
-    // Map through the result to include the transaction count
-    return customers.map((customer) => ({
+    return customers.map((customer: any) => ({
       ...customer,
-      transactionCount: customer._count.sender, // Add the number of transactions
+      transactionCount: customer._count.sender,
     }));
   } catch (error) {
     console.log("[GET_CUSTOMERS]", error);
