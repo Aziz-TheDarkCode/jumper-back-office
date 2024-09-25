@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "npx prisma generate"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.5.0",
@@ -28,6 +28,7 @@
     "nanoid": "^5.0.7",
     "next": "14.2.12",
     "next-auth": "^4.24.7",
+    "prisma": "^5.20.0",
     "qrcode.react": "^4.0.1",
     "radix-ui": "^1.0.1",
     "react": "^18",
