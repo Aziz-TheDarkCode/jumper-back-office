@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Customer } from "@prisma/client";
+import { Customer } from "./getCustomers";
 
 const getCustomers = async (): Promise<
   (Customer & { transactionCount: number })[]
