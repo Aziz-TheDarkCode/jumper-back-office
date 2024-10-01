@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-// import { Customer } from "@prisma/client";
-// Prisma
+import { Prisma } from '@prisma/client'
+
 
 export type Customer = {
   id: string;
@@ -11,6 +11,7 @@ export type Customer = {
   city: string | null;
   type: "SENDER" | "RECEIVER";
 };
+
 
 const getCustomers = async (): Promise<Customer[]> => {
   try {

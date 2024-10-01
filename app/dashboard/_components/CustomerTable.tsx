@@ -11,9 +11,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Customer } from "@prisma/client";
+// import { Customer } from "@prisma/client";
 // import { Customer } from "@prisma/client"; // Assuming Customer type is imported here
-
+type Customer = {
+  id: string;
+  fullName: string;
+  email: string | null;
+  phoneNumber: string;
+  address: string;
+  city: string | null;
+  type: "SENDER" | "RECEIVER";
+};
 export default function CustomerTable({
   customers,
 }: {
@@ -21,10 +29,9 @@ export default function CustomerTable({
 }) {
   const [filteredCustomers, setFilteredCustomers] = useState<
     (Customer & { transactionCount: number })[]
->([]);
+  >([]);
   const [nameFilter, setNameFilter] = useState("");
   const [emailFilter, setEmailFilter] = useState("");
-
 
   useEffect(() => {
     const filtered = customers.filter(
