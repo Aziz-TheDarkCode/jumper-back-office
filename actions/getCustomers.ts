@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 // import { Customer } from "@prisma/client";
+// Prisma
 
 export type Customer = {
   id: string;
