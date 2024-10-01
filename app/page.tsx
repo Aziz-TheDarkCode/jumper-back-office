@@ -15,12 +15,12 @@ import getShipments from "@/actions/getShipments";
 import NewUserModal from "./dashboard/_components/NewUserModal";
 import ShipmentModal from "./dashboard/_components/ShipmentModal";
 
+import { authOptions } from "@/lib/auth";
 import { isAdmin, isManager } from "@/lib/utils";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import StatCard from "./dashboard/_components/StatsCard";
 import ShipmentTable from "./dashboard/_components/Table";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);

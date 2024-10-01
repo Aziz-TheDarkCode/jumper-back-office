@@ -11,7 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Customer } from "@prisma/client"; // Assuming Customer type is imported here
+import { Customer } from "@prisma/client";
+// import { Customer } from "@prisma/client"; // Assuming Customer type is imported here
 
 export default function CustomerTable({
   customers,
@@ -23,7 +24,7 @@ export default function CustomerTable({
 >([]);
   const [nameFilter, setNameFilter] = useState("");
   const [emailFilter, setEmailFilter] = useState("");
- 
+
 
   useEffect(() => {
     const filtered = customers.filter(

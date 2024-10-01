@@ -7,8 +7,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres.qakwakqndswtiysnktep:jumper-admin0000@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
-  directUrl = "postgresql://postgres.qakwakqndswtiysnktep:jumper-admin0000@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
+  url      = "postgresql://postgres.qakwakqndswtiysnktep:jumper-admin0000@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=trueconnection_limit=3"
+  // directUrl = "postgresql://postgres.qakwakqndswtiysnktep:jumper-admin0000@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
 }
 model Shipment {
   id              String    @id @default(cuid())
@@ -38,7 +38,7 @@ model Customer {
   address      String
   city         String?
   type CustomerType
-   receiver       Shipment[]    @relation("receiver")
+  receiver       Shipment[]    @relation("receiver")
   sender         Shipment[]    @relation("sender")
 }
 model Session {
