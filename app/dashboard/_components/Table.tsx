@@ -45,6 +45,13 @@ export default function ShipmentTable({
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const { toast } = useToast();
 
+  const resetFilters = () => {
+    setNameFilter("");
+    setTrackingFilter("");
+    setOriginFilter("");
+    setDestinationFilter("");
+  };
+
   useEffect(() => {
     const filtered = shipments.filter(
       (shipment) =>
@@ -80,7 +87,6 @@ export default function ShipmentTable({
       });
       router.refresh();
     } catch (error) {
-      console.error(error);
       toast({
         title: "Erreur",
         description: "Erreur lors de la mise à jour du statut",
@@ -133,7 +139,7 @@ export default function ShipmentTable({
           onChange={(e) => setDestinationFilter(e.target.value)}
           className="max-w-sm"
         />
-        <Button>Réinitialiser</Button>
+        <Button onClick={resetFilters}>Réinitialiser</Button>
       </div>
       <div className="rounded-md border">
         <Table>

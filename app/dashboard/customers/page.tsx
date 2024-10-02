@@ -5,7 +5,7 @@ import CustomerTable from "../_components/CustomerTable";
 
 async function Page() {
   const customers = await getCustomers();
-  console.log(customers);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />

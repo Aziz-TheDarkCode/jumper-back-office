@@ -25,7 +25,6 @@ async function main() {
         },
       ],
     });
-
     console.log("successfully seeded categories");
   } catch (error) {
     console.error("Error seeding the categories: ", error);

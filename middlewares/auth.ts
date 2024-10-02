@@ -22,7 +22,6 @@ export function withAuthMiddleware(middleware: CustomMiddleware) {
       signInUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(signInUrl);
     }
-
     return middleware(request, event, response);
   };
 }

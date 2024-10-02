@@ -13,7 +13,7 @@ import ShipmentTable from "../_components/Table";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
-  console.log(session?.user);
+
   const shipments = await getShipments(null);
   const customers = await getCustomers();
 

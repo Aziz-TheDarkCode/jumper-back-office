@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input";
+;
 import {
   Table,
   TableBody,
@@ -11,8 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import { Customer } from "@prisma/client";
-// import { Customer } from "@prisma/client"; // Assuming Customer type is imported here
+import { Button } from "@/app/components/ui/button";
+//
 type Customer = {
   id: string;
   fullName: string;
@@ -32,15 +33,23 @@ export default function CustomerTable({
   >([]);
   const [nameFilter, setNameFilter] = useState("");
   const [emailFilter, setEmailFilter] = useState("");
+  const [phoneFilter, setPhoneFilter] = useState("");
+
+  const resetFilters = () => {
+    setNameFilter("");
+    setEmailFilter("");
+    setPhoneFilter("");
+  };
 
   useEffect(() => {
     const filtered = customers.filter(
       (customer) =>
         customer.fullName.toLowerCase().includes(nameFilter.toLowerCase()) &&
-        customer.email?.toLowerCase().includes(emailFilter.toLowerCase())
+        (customer.email?.toLowerCase().includes(emailFilter.toLowerCase()) ?? true) &&
+        customer.phoneNumber.toLowerCase().includes(phoneFilter.toLowerCase())
     );
     setFilteredCustomers(filtered);
-  }, [nameFilter, emailFilter, customers]);
+  }, [nameFilter, emailFilter, phoneFilter, customers]);
 
   if (customers.length === 0) return <p>Loading...</p>;
 
@@ -59,6 +68,13 @@ export default function CustomerTable({
           onChange={(e) => setEmailFilter(e.target.value)}
           className="max-w-sm"
         />
+        <Input
+          placeholder="Filtrer par téléphone"
+          value={phoneFilter}
+          onChange={(e) => setPhoneFilter(e.target.value)}
+          className="max-w-sm"
+        />
+        <Button onClick={resetFilters}>Réinitialiser</Button>
       </div>
       <div className="rounded-md border">
         <Table>
