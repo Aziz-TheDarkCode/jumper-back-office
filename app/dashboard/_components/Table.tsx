@@ -87,6 +87,7 @@ export default function ShipmentTable({
       });
       router.refresh();
     } catch (error) {
+      console.log(error);
       toast({
         title: "Erreur",
         description: "Erreur lors de la mise à jour du statut",
