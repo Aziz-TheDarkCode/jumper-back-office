@@ -36,7 +36,7 @@ const shipmentSchema = z.object({
       /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
       "Veuillez entrer un numéro correct. Préciser l&apos;indicatif du pays"
     ),
-  sender_email: z.string().email("Email invalide").optional(),
+  // sender_email: z.string().email("Email invalide").optional(),
   sender_adress: z.string().min(1, "Adresse est requise"),
 
   receiver_name: z.string().min(1, "Le nom complet est requis"),
@@ -46,7 +46,7 @@ const shipmentSchema = z.object({
       /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
       "Veuillez entrer un numéro correct. Préciser l&apos;indicatif du pays"
     ),
-  receiver_email: z.string().email("Email invalide").optional(),
+  // receiver_email: z.string().email("Email invalide").optional(),
   receiver_adress: z.string().min(1, "Adresse est requise"),
   description: z.string().min(1, "Description requise"),
   weight: z.number().min(0.1, "Le poids est requis"),
@@ -336,7 +336,7 @@ export default function ShipmentModal({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="EXPRESS">Express</SelectItem>
-                        <SelectItem value="FREIGHT">Freight</SelectItem>
+                        <SelectItem value="FREIGHT">Fret</SelectItem>
                         <SelectItem value="GP">GP</SelectItem>
                       </SelectContent>
                     </Select>
