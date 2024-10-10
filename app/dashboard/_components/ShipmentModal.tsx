@@ -36,9 +36,8 @@ const shipmentSchema = z.object({
       /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
       "Veuillez entrer un numéro correct. Préciser l&apos;indicatif du pays"
     ),
-  // sender_email: z.string().email("Email invalide").optional(),
-  sender_adress: z.string().min(1, "Adresse est requise"),
 
+  sender_adress: z.string().min(1, "Adresse est requise"),
   receiver_name: z.string().min(1, "Le nom complet est requis"),
   receiver_phone_number: z
     .string()
@@ -46,7 +45,8 @@ const shipmentSchema = z.object({
       /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
       "Veuillez entrer un numéro correct. Préciser l&apos;indicatif du pays"
     ),
-  // receiver_email: z.string().email("Email invalide").optional(),
+    paymentStatus: z.enum(["PAID", "UNPAID"]).default("UNPAID"),
+    postalServiceFee: z.number().min(0).nullable().optional(),
   receiver_adress: z.string().min(1, "Adresse est requise"),
   description: z.string().min(1, "Description requise"),
   weight: z.number().min(0.1, "Le poids est requis"),
@@ -83,7 +83,7 @@ export default function ShipmentModal({
       await axios.post("/api/shipments", data);
       toast({
         title: "Succès",
-        description: "l&apos;expédition a été créée avec succès",
+        description: "l'expédition a été créée avec succès",
       });
       router.refresh();
       setOpen(false); // Close the modal on success
@@ -91,7 +91,7 @@ export default function ShipmentModal({
       console.error(error);
       toast({
         title: "Erreur",
-        description: "Erreur lors de la création de l&apos;expédition",
+        description: "Erreur lors de la création de l'expédition",
         variant: "destructive",
       });
     } finally {
@@ -176,7 +176,6 @@ export default function ShipmentModal({
                   />
                 </div>
               ) : null}
-
               <div className="mb-4">
                 <Input
                   {...register("sender_name")}
@@ -346,7 +345,48 @@ export default function ShipmentModal({
                   <small className="text-pink-600">{errors.type.message as string}</small>
                 )}
               </div>
-
+              <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Controller
+                name="paymentStatus"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Statut de paiement" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PAID">Payé</SelectItem>
+                      <SelectItem value="UNPAID">Non payé</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.paymentStatus && (
+                <small className="text-pink-600">
+                  {errors.paymentStatus.message as string}
+                </small>
+              )}
+            </div>
+            <div>
+              <Input
+                {...register("postalServiceFee", {
+                  valueAsNumber: true,
+                  setValueAs: v => v === "" ? null : parseFloat(v)
+                })}
+                placeholder="Frais de service postal (optionnel)"
+                className={clsx(
+                  "border",
+                  errors.postalServiceFee ? "border-pink-600" : "border-gray-300"
+                )}
+              />
+              {errors.postalServiceFee && (
+                <small className="text-pink-600">
+                  {errors.postalServiceFee.message as string}
+                </small>
+              )}
+            </div>
+          </div>
               <div>
                 <Input
                   {...register("description")}

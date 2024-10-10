@@ -10,18 +10,12 @@ export function isAdmin(role: string): boolean {
 export function isManager(role: string): boolean {
   return role === "USER";
 }
-export function translateStatus(status: string): string {
+export function translatePaymentStatus(status: string): string {
   switch (status) {
-    case "PENDING":
-      return "En préparation";
-    case "IN_TRANSIT":
-      return "Expédié";
-    case "ARRIVED":
-      return "Arrivé";
-    case "DELIVERED":
-      return "Délivré";
-    case "CANCELLED":
-      return "Annulé";
+    case "UNPAID":
+      return "Non payé";
+    case "PAID":
+      return "Payé";
     default:
       return "Statut inconnu"; // In case of an unknown status
   }

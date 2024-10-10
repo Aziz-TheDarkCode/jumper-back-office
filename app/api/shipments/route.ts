@@ -33,6 +33,8 @@ export async function POST(request: Request) {
         destination: body.destination,
         price: body.price,
         estimatedValue: body.estimatedValue,
+        paymentStatus: body.paymentStatus || "UNPAID", // New field
+        postalServiceFee: body.postalServiceFee || null, // New optional field
         sender: {
           connectOrCreate: {
             where: {

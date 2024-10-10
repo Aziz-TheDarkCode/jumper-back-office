@@ -16,13 +16,14 @@ model Shipment {
   origin          String
   destination     String
   price           Int
+  postalServiceFee Int?
   sender          Customer? @relation("sender", fields: [senderId], references: [id])
   receiver        Customer? @relation("receiver", fields: [receiverId], references: [id])
   senderId        String
-  receiverId        String
-
+  receiverId      String
   type            ShipmentType
   status          ShipmentStatus
+  paymentStatus   PaymentStatus @default(UNPAID)  // New field
   trackingNumber  String    @unique @default(cuid())
   createdAt       DateTime  @default(now())
   estimatedValue  Int
@@ -97,4 +98,9 @@ enum ShipmentType {
   FREIGHT
   EXPRESS
  GP
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
 }

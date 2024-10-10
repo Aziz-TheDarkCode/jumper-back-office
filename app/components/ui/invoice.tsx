@@ -9,6 +9,8 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { translatePaymentStatus } from "@/lib/utils";
 export default function Invoice({
   shipment,
   isOpen,
@@ -32,20 +34,34 @@ export default function Invoice({
             <div className="p-6 bg-white" ref={componentRef}>
               <div className="border-b-4 border-[#148aab] pb-4 mb-4">
                 <div className="flex justify-between items-center">
+                  <div>
                   <img
                     alt="Your Company"
                     src="/jumper.png"
                     className="h-8 w-auto"
                   />
+                  <div className="mt-4">
+                    <p className="text-sm">Jumper Logistiques</p>
+                      <p className="text-sm">Cité Magistrat, Dakar 10200</p>
+                      <p className="text-sm">Dakar, Senegal</p>
+                      <p className="text-sm">Fixe : +221 338563091</p>
+                      <p className="text-sm">Téléphone : +221 774721258</p>
+                  </div>
+                  </div>
+                  <div className="flex items-center justif-center flex-col">
                   <QRCodeSVG
                     value={`https://jumper-logistiques.vercel.app/services/tracking/?id=${shipment.trackingNumber}`}
                     size={64}
                   />
+                  <small className="text-xs">
+                  Scanner pour suivre votre colis
+                  </small>
+                  <p className="text-sm">
+                  ID du colis : <span className="font-bold"> {shipment.trackingNumber}</span>
+                  </p>
+                  </div>
                 </div>
-                <p className="text-sm">Jumper Logistiques</p>
-                <p className="text-sm">Cité Magistrat, Dakar 10200</p>
-                <p className="text-sm">Dakar, Senegal</p>
-                <p className="text-sm">+918660876889</p>
+
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">
@@ -70,6 +86,8 @@ export default function Invoice({
                   Information sur le colis
                 </h2>
                 <p>Nature du colis : {shipment.description}</p>
+                <p>Numéro de suivi : {shipment.trackingNumber}</p>
+
                 <p>
                   Destination : {shipment.origin} → {shipment.destination}
                 </p>
@@ -78,11 +96,13 @@ export default function Invoice({
                   {new Date(shipment.createdAt).toLocaleDateString()}
                 </p>
                 <p>Valeur estimé du colis : {shipment.estimatedValue} FCFA</p>
+                <p>Status : <Badge>{translatePaymentStatus(shipment.paymentStatus)}</Badge> </p>
+                <p>Tarif Transport  : {shipment.price} FCFA  </p>
+                <p>Tarif Postal  : {shipment.postalServiceFee ?? 0} FCFA  </p>
               </div>
-
               <div className="text-right">
                 <p className="font-semibold">
-                  Total a payer : {shipment.price} FCFA
+                  Total a payer : {shipment.price + (shipment.postalServiceFee ?? 0) } FCFA
                 </p>
               </div>
             </div>

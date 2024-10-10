@@ -8,8 +8,11 @@ export interface Shipment {
   description: string;
   estimatedValue: number;
   status: string;
+  paymentStatus: string; // Added paymentStatus field
   trackingNumber: string;
   price: number;
+  weight: number; // Added weight field
+  postalServiceFee: number | null; // Added postalServiceFee field
   createdAt: Date;
   sender: {
     fullName: string;
@@ -23,16 +26,17 @@ export interface Shipment {
   } | null;
   user: {
     name: string | null;
-  }| null;
+  } | null;
 }
+
 const getShipments = async (limit: number | null): Promise<Shipment[]> => {
   try {
     const shipments = await prisma.shipment.findMany({
-      ...(limit && { take: limit }), // Add limit if provided
+      ...(limit && { take: limit }),
       include: {
         sender: true,
         receiver: true,
-        user: true, // Assuming this is the user who created the shipment
+        user: true,
       },
       orderBy: {
         createdAt: "desc",

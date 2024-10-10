@@ -8,7 +8,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  
+
   if (!session || session.user?.role !== "ADMIN") {
     return NextResponse.json(
       {
@@ -20,27 +20,28 @@ export async function PATCH(
   }
   try {
     const id = params.id;
-    const { status } = await request.json();
+    const data = await request.json();
 
-    // Validate the status
-    const validStatuses = [
-      "PENDING",
-      "IN_TRANSIT",
-      "DELIVERED",
-      "CANCELLED",
-      "ARRIVED",
-    ];
-    if (!validStatuses.includes(status)) {
+    const validShipmentStatuses = ["PENDING", "IN_TRANSIT", "DELIVERED", "CANCELLED", "ARRIVED"];
+    if (data.status && !validShipmentStatuses.includes(data.status)) {
       return NextResponse.json(
-        { error: "Invalid status provided" },
+        { error: "Invalid shipment status provided" },
         { status: 400 }
       );
     }
 
+    // Validate the payment status
+    const validPaymentStatuses = ["PAID", "UNPAID"];
+    if (data.paymentStatus && !validPaymentStatuses.includes(data.paymentStatus)) {
+      return NextResponse.json(
+        { error: "Invalid payment status provided" },
+        { status: 400 }
+      );
+    }
     // Update the shipment
     const updatedShipment = await prisma.shipment.update({
       where: { id },
-      data: { status },
+      data,
     });
 
     return NextResponse.json(updatedShipment);

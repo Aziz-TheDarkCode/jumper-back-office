@@ -21,12 +21,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { isManager } from "@/lib/utils";
+import { cn, isManager, translatePaymentStatus } from "@/lib/utils";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import StatusTag from "./Badge";
+import { Badge } from "@/components/ui/badge";
 
 export default function ShipmentTable({
   shipments,
@@ -97,6 +98,26 @@ export default function ShipmentTable({
       setLoadingRow(false);
     }
   };
+  const handleChangePaymentStatus = async (id: string, newStatus: string) => {
+    try {
+      setLoadingRow(true);
+      await axios.patch(`/api/shipments/${id}`, { paymentStatus: newStatus });
+      toast({
+        title: "Succès",
+        description: "Statut de paiement mis à jour avec succès",
+      });
+      router.refresh();
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la mise à jour du statut de paiement",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingRow(false);
+    }
+  };
   const [selectedShipment, setselectedShipment] = useState<Shipment | null>(
     null
   );
@@ -150,6 +171,7 @@ export default function ShipmentTable({
               <TableHead>Destination</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Statut</TableHead>
+              <TableHead>Statut de paiement</TableHead>
               <TableHead>Numéro de suivi</TableHead>
               <TableHead>Nom de l&apos;expéditeur</TableHead>
               <TableHead>Nom du destinataire</TableHead>
@@ -157,6 +179,7 @@ export default function ShipmentTable({
               <TableHead>Prix a payer</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Changer le status</TableHead>
+              <TableHead>Statut de paiement</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -172,6 +195,18 @@ export default function ShipmentTable({
                 <TableCell>{shipment.type}</TableCell>
                 <TableCell>
                   <StatusTag status={shipment.status} />
+                </TableCell>
+                <TableCell>
+                <Badge className={cn(
+        "text-xs",
+        shipment.paymentStatus === "PAID"
+          ? "bg-green-100 text-green-800 hover:bg-blue-100"
+          : "",
+          shipment.paymentStatus === "UNPAID"
+          ? "bg-red-100 text-red-800 text-[9px] hover:bg-blue-100"
+          : "",
+
+      )}>{translatePaymentStatus(shipment.paymentStatus)}</Badge>
                 </TableCell>
                 <TableCell>{shipment.trackingNumber}</TableCell>
                 <TableCell>{shipment?.sender?.fullName}</TableCell>
@@ -200,6 +235,23 @@ export default function ShipmentTable({
                       <SelectItem value="ARRIVED">Arrivé</SelectItem>
                       <SelectItem value="DELIVERED">Livré</SelectItem>
                       <SelectItem value="CANCELLED">Annulé</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell>
+                  <Select
+                    disabled={loadingRow || isManager(session?.user.role as string)}
+                    defaultValue={shipment.paymentStatus}
+                    onValueChange={(value) =>
+                      handleChangePaymentStatus(shipment.id, value)
+                    }
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Choisir statut de paiement" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PAID">Payé</SelectItem>
+                      <SelectItem value="UNPAID">Non payé</SelectItem>
                     </SelectContent>
                   </Select>
                 </TableCell>
@@ -237,9 +289,14 @@ export default function ShipmentTable({
                     <dt className="text-sm font-medium leading-6 text-gray-900">
                       Nature du colis
                     </dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    <dd className="mt-1 flex items-center gap-2 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                       {selectedShipment.description}{" "}
                       <StatusTag status={selectedShipment.status} />
+                      <span>{selectedShipment.weight}KG</span>
+                <span>
+                {selectedShipment.origin} → {selectedShipment.destination}
+                </span>
+
                     </dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
