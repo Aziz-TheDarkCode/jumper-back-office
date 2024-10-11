@@ -132,7 +132,7 @@ export default function ShipmentTable({
     setselectedShipment(shipment);
     setIsInvoiceOpen(true);
   };
-  if (shipments.length === 0) return <p>Pas d'expéditions trouvées</p>;
+  if (shipments.length === 0) return <p>Pas d&apos;expéditions trouvées</p>;
 
   return (
     <div className="space-y-4">
