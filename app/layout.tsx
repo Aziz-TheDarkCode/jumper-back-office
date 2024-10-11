@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Lexend_Deca({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Jumper Logistiques | Back office",
+  title: "Jumper Logistique | Back office",
   description: "Dashboard pour la gestion des colis",
 };
 

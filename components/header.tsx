@@ -29,7 +29,7 @@ const Header = () => {
         <div className="relative flex h-16 justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button */}
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#e8cc2b]">
+            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#fed63b]">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
               <BarChart3Icon
@@ -51,12 +51,12 @@ const Header = () => {
               />
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              {/* Current: "border-[#e8cc2b] ", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
+              {/* Current: "border-[#fed63b] ", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
               <Link
                 href="/"
                 className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
                   isActiveLink("/")
-                    ? "border-[#e8cc2b] "
+                    ? "border-[#fed63b] "
                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                 }`}
               >
@@ -66,7 +66,7 @@ const Header = () => {
                 href="/dashboard/shipments"
                 className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
                   isActiveLink("/dashboard/shipments")
-                    ? "border-[#e8cc2b] "
+                    ? "border-[#fed63b] "
                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                 }`}
               >
@@ -76,7 +76,7 @@ const Header = () => {
                 href="/dashboard/customers"
                 className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
                   isActiveLink("/dashboard/customers")
-                    ? "border-[#e8cc2b] "
+                    ? "border-[#fed63b] "
                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                 }`}
               >
@@ -92,7 +92,7 @@ const Header = () => {
             {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">
               <div>
-                <MenuButton className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#e8cc2b] focus:ring-offset-2">
+                <MenuButton className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#fed63b] focus:ring-offset-2">
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
                   <Image
@@ -140,13 +140,13 @@ const Header = () => {
 
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 pb-4 pt-2">
-          {/* Current: "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700 underline", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
+          {/* Current: "bg-[#fed63b]-50 border-[#fed63b] text-[#fed63b]-700 underline", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
           <DisclosureButton
             as="a"
             href="/"
             className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium ${
               isActiveLink("/")
-                ? "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700 underline"
+                ? "bg-[#fed63b]-50 border-[#fed63b] text-[#fed63b]-700 underline"
                 : "border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
             }`}
           >
@@ -157,7 +157,7 @@ const Header = () => {
             href="/dashboard/shipments"
             className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium ${
               isActiveLink("/dashboard/shipments")
-                ? "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700 underline"
+                ? "bg-[#fed63b]-50 border-[#fed63b] text-[#fed63b]-700 underline"
                 : "border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
             }`}
           >
@@ -168,7 +168,7 @@ const Header = () => {
             href="/dashboard/customers"
             className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium ${
               isActiveLink("/dashboard/customers")
-                ? "bg-[#e8cc2b]-50 border-[#e8cc2b] text-[#e8cc2b]-700 underline"
+                ? "bg-[#fed63b]-50 border-[#fed63b] text-[#fed63b]-700 underline"
                 : "border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
             }`}
           >

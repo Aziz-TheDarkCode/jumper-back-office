@@ -197,16 +197,19 @@ export default function ShipmentTable({
                   <StatusTag status={shipment.status} />
                 </TableCell>
                 <TableCell>
-                <Badge className={cn(
-        "text-xs",
-        shipment.paymentStatus === "PAID"
-          ? "bg-green-100 text-green-800 hover:bg-blue-100"
-          : "",
-          shipment.paymentStatus === "UNPAID"
-          ? "bg-red-100 text-red-800 text-[9px] hover:bg-blue-100"
-          : "",
-
-      )}>{translatePaymentStatus(shipment.paymentStatus)}</Badge>
+                  <Badge
+                    className={cn(
+                      "text-xs",
+                      shipment.paymentStatus === "PAID"
+                        ? "bg-green-100 text-green-800 hover:bg-blue-100"
+                        : "",
+                      shipment.paymentStatus === "UNPAID"
+                        ? "bg-red-100 text-red-800 text-[9px] hover:bg-blue-100"
+                        : ""
+                    )}
+                  >
+                    {translatePaymentStatus(shipment.paymentStatus)}
+                  </Badge>
                 </TableCell>
                 <TableCell>{shipment.trackingNumber}</TableCell>
                 <TableCell>{shipment?.sender?.fullName}</TableCell>
@@ -240,7 +243,9 @@ export default function ShipmentTable({
                 </TableCell>
                 <TableCell>
                   <Select
-                    disabled={loadingRow || isManager(session?.user.role as string)}
+                    disabled={
+                      loadingRow || isManager(session?.user.role as string)
+                    }
                     defaultValue={shipment.paymentStatus}
                     onValueChange={(value) =>
                       handleChangePaymentStatus(shipment.id, value)
@@ -261,7 +266,7 @@ export default function ShipmentTable({
                       e.stopPropagation();
                       handleShowInvoice(shipment);
                     }}
-                    className="bg-[#148aab] hover:bg-[#0e697f8f]"
+                    className="bg-[#32cd99] hover:bg-[#31cc988f]"
                   >
                     Afficher la facture
                   </Button>
@@ -293,10 +298,10 @@ export default function ShipmentTable({
                       {selectedShipment.description}{" "}
                       <StatusTag status={selectedShipment.status} />
                       <span>{selectedShipment.weight}KG</span>
-                <span>
-                {selectedShipment.origin} → {selectedShipment.destination}
-                </span>
-
+                      <span>
+                        {selectedShipment.origin} →{" "}
+                        {selectedShipment.destination}
+                      </span>
                     </dd>
                   </div>
                   <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
