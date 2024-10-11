@@ -1,33 +1,42 @@
-import { hash } from "crypto";
-
 const { PrismaClient } = require("@prisma/client");
+const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient();
 
 async function main() {
   try {
-    // const hashedPassword = await hash("123456", 10);
-    await prisma.user.createMany({
-      data: [
-        {
-          name: "Aziz Ndiaye",
-          email: "abdouaziznjay@gmail.com",
-          password: "23",
-          phoneNumber: "+221783596489",
-          role: "SHIPPING_AGENT",
+    const saltRounds = 10; // You can adjust this for stronger hashing
+
+    const users = [
+      {
+        name: "admin",
+        email: "admin@admin.com",
+        password: "admin",
+        phoneNumber: "+2210000000",
+        role: "ADMIN",
+      },
+      {
+        name: "Moussa Gueye",
+        email: "admin@jumper.com",
+        password: "jumper-admin",
+        phoneNumber: "+2215996564",
+        role: "ADMIN",
+      },
+    ];
+
+    for (const user of users) {
+      const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+      await prisma.user.create({
+        data: {
+          ...user,
+          password: hashedPassword,
         },
-        {
-          name: "Salimata Gueye",
-          email: "sali@gmail.com",
-          password: "23",
-          phoneNumber: "+221777843872",
-          role: "SHIPPING_AGENT",
-        },
-      ],
-    });
-    console.log("successfully seeded categories");
+      });
+    }
+
+    console.log("Successfully seeded users with hashed passwords");
   } catch (error) {
-    console.error("Error seeding the categories: ", error);
+    console.error("Error seeding the users: ", error);
   } finally {
     await prisma.$disconnect();
   }
